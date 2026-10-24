@@ -1,0 +1,46 @@
+﻿@page "/categories"
+@inject IHttpClientFactory ClientFactory;
+@inject ILogger<Categories> logger;
+
+<h3>Categories</h3>
+<table>
+    <thead>
+        <tr>
+            <td>Id</td>
+            <td>Category</td>
+        </tr>
+    </thead>
+    <tbody>
+        @if(categories != null)
+        {
+            @foreach (var item in categories)
+            {
+                <tr>
+                    <td>@item.FoodCategoryId</td>
+                    <td>@item.FoodCategory1</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<div class="blazor-error-boundary" hidden>
+
+</div>
+
+@code {
+    private HttpClient client = null!;
+    private List<FoodCategoryModel> categories = null!;
+    protected override async Task OnInitializedAsync()
+    {
+        client = ClientFactory.CreateClient("apiService");
+        try
+        {
+            categories = await client.GetFromJsonAsync<List<FoodCategoryModel>>("/api/recepten/categories") ?? null!;
+        } catch(Exception ex)
+        {
+            logger.LogError(ex.Message);
+        }
+
+        await base.OnInitializedAsync();
+    }
+}

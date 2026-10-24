@@ -1,0 +1,40 @@
+﻿@page "/ingredients"
+@inject IHttpClientFactory clientFactory;
+@if(ingredients != null)
+{
+    
+
+<article>
+    <h3>Ingredients</h3>
+    <article>
+        <table>
+            <thead>
+
+            </thead>
+            <tbody>
+                @foreach(IngredientModel im in ingredients)
+                {
+                    <tr>
+                        <td>@im.IngredientId</td>
+                        <td>@im.Ingredient1</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </article>
+</article>
+}
+@code {
+    private HttpClient client = null!;
+    private List<IngredientModel> ingredients { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        client = clientFactory.CreateClient("apiService");
+        try
+        {
+            ingredients = await client.GetFromJsonAsync<List<IngredientModel>>("/api/recepten/ingredients") ?? null!;
+        } catch {}
+        await base.OnInitializedAsync();
+    }
+}

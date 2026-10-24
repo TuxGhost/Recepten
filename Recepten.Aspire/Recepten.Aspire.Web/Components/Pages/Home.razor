@@ -1,0 +1,83 @@
+﻿@page "/"
+@inject IHttpClientFactory ClientFactory;
+@inject ILogger<Home> Log;
+
+<PageTitle>Home</PageTitle>
+
+<h1>Recepten</h1>
+<div id="Overview">
+@if(recipes != null)
+{
+ <table>
+     <thead>
+         <tr>
+             <td>Id</td>
+             <td>Name</td>
+         </tr>
+     </thead>
+     <tbody>
+        @foreach(var item in recipes)
+            {
+                <tr @onclick="() => OnItemClick(item)">
+                        <td>@item.RecipeId</td>
+                    <td>@item.RecipeName</td>
+                </tr>
+            }
+        </tbody>     
+ </table>   
+} else
+{
+    @if (data != null)
+    {
+        @foreach (var item in data)
+        {
+            <p>@item</p>
+        }
+    }
+}
+</div>
+<article id="recept" hidden="@(recipe==null)">
+    <h2>@recipe?.RecipeName</h2>
+    <p>@recipe?.Instructions</p>
+    <p>@recipe?.Ingredients</p>
+    <p>@recipe?.Notes</p>
+    <p>@recipe?.NumberofServings</p>
+    <p>@recipe?.RecipeDescription</p>
+    <p>@recipe?.TimeToPrepare</p>
+</article>
+<div id="blazor-error-ui">
+
+</div>
+
+@code{
+    private HttpClient client=null!;
+    private List<object> data = new();
+    private List<RecipeModel> recipes = new();
+    private RecipeModel recipe { get; set; } = null!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);      
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        client = ClientFactory.CreateClient("apiService");
+        try
+        {
+            recipes = await client.GetFromJsonAsync<List<RecipeModel>>("/api/recepten/objects") ?? null!;
+        } catch(Exception ex)
+        {
+            Log.LogError(ex.StackTrace);
+        }
+        try
+        {
+            data = await client.GetFromJsonAsync<List<object>>("/api/recepten/objects") ?? null!;
+        } catch(Exception ){}      
+        await base.OnInitializedAsync();
+    }
+    private async Task OnItemClick(RecipeModel r)
+    {
+        recipe = r;
+        
+    }
+}

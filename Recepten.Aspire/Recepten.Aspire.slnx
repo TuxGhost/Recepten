@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Recepten.Aspire.ApiService/Recepten.Aspire.ApiService.csproj" />
+  <Project Path="Recepten.Aspire.AppHost/Recepten.Aspire.AppHost.csproj" />
+  <Project Path="Recepten.Aspire.ServiceDefaults/Recepten.Aspire.ServiceDefaults.csproj" />
+  <Project Path="Recepten.Aspire.Tests/Recepten.Aspire.Tests.csproj" />
+  <Project Path="Recepten.Aspire.Web/Recepten.Aspire.Web.csproj" />
+</Solution>
